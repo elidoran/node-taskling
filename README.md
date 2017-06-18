@@ -1,0 +1,84 @@
+# taskling
+[![Build Status](https://travis-ci.org/elidoran/node-taskling.svg?branch=master)](https://travis-ci.org/elidoran/node-taskling)
+[![Dependency Status](https://gemnasium.com/elidoran/node-taskling.png)](https://gemnasium.com/elidoran/node-taskling)
+[![npm version](https://badge.fury.io/js/taskling.svg)](http://badge.fury.io/js/taskling)
+[![Coverage Status](https://coveralls.io/repos/github/elidoran/node-taskling/badge.svg?branch=master)](https://coveralls.io/github/elidoran/node-taskling?branch=master)
+
+Small simple async function series with prepend/append/clear during run.
+
+Features:
+
+1. Provides a shared object to each task function
+2. execution ends when a task provides an error to the callback
+3. mutable task queue via `prepend()`, `append()`, `clear()`
+
+
+## Install
+
+```sh
+npm install --save taskling
+```
+
+
+## Usage
+
+```javascript
+var tasks = require('taskling')
+
+// create a shared object to hold data usable by all task functions:
+var shared = {}
+
+// create an array of functions (tasks) to run:
+var array = [
+  // must always call the first arg, next(), when done.
+  function first(next) { next() }
+
+  // second arg is the `shared` we provide to tasks()
+  function second(next, sharedObject) { next() }
+
+  // the `this` context is a "control" object with helper functions:
+  function controlled(next) {
+    // prepend/append:
+    //   - require an array argument.
+    //   - accept nested arrays.
+
+    // add array of functions to run *next*,
+    // so they go in the front of the queue/array:
+    this.prepend([/* ... */])
+
+    // same as prepend() except they are added to the end.
+    this.append([/* ... */])
+
+    // empty the tasks array:
+    this.clear()
+  }
+]
+
+// a "done" function is called when tasks are done.
+// if an error is provided by a task then execution stops
+// and the "done" callback is called with the error as first arg.
+function done(error) {
+  // do something with error, if it exists...
+  // otherwise, it was a success.
+}
+
+// now, use those three things to run the tasks:
+tasks(shared, array, done)
+
+// NOTE:
+//  tasks() will always return immediately before it begins execution.
+//  this is the standard behavior for asynchronous API's.
+
+
+// Succinct use:
+require('taskling')({
+  // the shared object
+}, [
+  // the tasks array
+], function(error) {
+  // the "done" callback
+})
+```
+
+
+## [MIT License](LICENSE)

@@ -1,6 +1,6 @@
 {
   "name": "taskling",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Small simple async function series with prepend/append/clear during run.",
   "main": "lib/index.js",
   "files": [

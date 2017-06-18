@@ -31,10 +31,10 @@ var shared = {}
 // create an array of functions (tasks) to run:
 var array = [
   // must always call the first arg, next(), when done.
-  function first(next) { next() }
+  function first(next) { next() },
 
   // second arg is the `shared` we provide to tasks()
-  function second(next, sharedObject) { next() }
+  function second(next, sharedObject) { next() },
 
   // the `this` context is a "control" object with helper functions:
   function controlled(next) {
@@ -51,12 +51,13 @@ var array = [
 
     // empty the tasks array:
     this.clear()
-  }
+  },
 ]
 
 // a "done" function is called when tasks are done.
 // if an error is provided by a task then execution stops
 // and the "done" callback is called with the error as first arg.
+// if no error is provided, ever, then "done" is called last.
 function done(error) {
   // do something with error, if it exists...
   // otherwise, it was a success.

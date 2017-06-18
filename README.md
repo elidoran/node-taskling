@@ -81,5 +81,25 @@ require('taskling')({
 })
 ```
 
+### map+require
+
+I usually separate out my task functions into separate modules. Then, instead of writing `require()` every for each one I use `map(require)` on the array.
+
+```javascript
+var array = [
+  'some-package',     // some published package providing a task function
+  './some/module.js', // some local module providing a task function
+].map(require)
+
+// or in the whole thing as "succinct" version:
+require('taskling')({
+  // shared object
+}, [
+  'some-package',
+  './some/module.js',
+].map(require), function(error) {
+  // all done...
+})
+```
 
 ## [MIT License](LICENSE)

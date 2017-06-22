@@ -73,12 +73,14 @@ tasks(shared, array, done)
 
 // Succinct use:
 require('taskling')({
-  // the shared object
-}, [
-  // the tasks array
-], function(error) {
-  // the "done" callback
-})
+    // the shared object
+  }, [
+    // the tasks array
+  ],
+  function(error) {
+    // the "done" callback
+  }
+)
 ```
 
 ### map+require

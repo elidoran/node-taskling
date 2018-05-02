@@ -51,6 +51,8 @@ var array = [
 
     // empty the tasks array:
     this.clear()
+
+    next()  // always call next()
   },
 ]
 

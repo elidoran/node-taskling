@@ -1,12 +1,12 @@
 'use strict'
 
-var flatten = require('@flatten/array') // allow nested arrays
+const flatten = require('@flatten/array') // allow nested arrays
 
 // shared - shared object given to every function as 2nd arg.
 // tasks  - array of functions to call.
 // done   - error accepting callback.
 module.exports = function runTasks(shared, tasks, done) {
-  var control = { prepend, append, clear, tasks } // combine tasks w/utils
+  const control = { prepend, append, clear, tasks } // combine tasks w/utils
 
   function next(error) { // iterator given to each task.
     if (error || tasks.length < 1) done(error)     // end on error or all done.

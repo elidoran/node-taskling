@@ -28,10 +28,11 @@
   "scripts": {
     "lint": "eslint index.js",
     "test": "_mocha -R spec --bail --check-leaks test.js test-optimizable.js",
-    "test6": "nave use 6.14 npm test",
-    "test8": "nave use 8.11 npm test",
-    "test10": "nave use 10.0 npm test",
-    "tests": "npm run test6 && npm run test8 && npm run test10",
+    "test6": "nave use 6 npm test",
+    "test8": "nave use 8 npm test",
+    "test10": "nave use 10 npm test",
+    "test11": "nave use 11 npm test",
+    "tests": "npm run test6 && npm run test8 && npm run test10 && npm run test11",
     "coverage": "istanbul cover -x 'test*' _mocha -- -R spec test.js test-optimizable.js"
   },
   "repository": {

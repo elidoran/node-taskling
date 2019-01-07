@@ -1,6 +1,5 @@
 # taskling
 [![Build Status](https://travis-ci.org/elidoran/node-taskling.svg?branch=master)](https://travis-ci.org/elidoran/node-taskling)
-[![Dependency Status](https://gemnasium.com/elidoran/node-taskling.png)](https://gemnasium.com/elidoran/node-taskling)
 [![npm version](https://badge.fury.io/js/taskling.svg)](http://badge.fury.io/js/taskling)
 [![Coverage Status](https://coveralls.io/repos/github/elidoran/node-taskling/badge.svg?branch=master)](https://coveralls.io/github/elidoran/node-taskling?branch=master)
 
@@ -23,13 +22,13 @@ npm install --save taskling
 ## Usage
 
 ```javascript
-var tasks = require('taskling')
+const tasks = require('taskling')
 
 // create a shared object to hold data usable by all task functions:
-var shared = {}
+const shared = {}
 
 // create an array of functions (tasks) to run:
-var array = [
+const array = [
   // must always call the first arg, next(), when done.
   function first(next) { next() },
 
@@ -60,9 +59,11 @@ var array = [
 // if an error is provided by a task then execution stops
 // and the "done" callback is called with the error as first arg.
 // if no error is provided, ever, then "done" is called last.
-function done(error) {
+function done(error, result) {
   // do something with error, if it exists...
   // otherwise, it was a success.
+  // get your results from the `sharedObject`,
+  // or, the last task can provide a `result` as the 2nd arg.
 }
 
 // now, use those three things to run the tasks:
@@ -79,7 +80,7 @@ require('taskling')({
   }, [
     // the tasks array
   ],
-  function(error) {
+  function(error, result) {
     // the "done" callback
   }
 )

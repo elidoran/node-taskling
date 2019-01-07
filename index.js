@@ -11,10 +11,10 @@ module.exports = function runTasks(shared, tasks, done) {
   const control = { prepend, append, clear, tasks }
 
   // iterator given to each task.
-  function next(error) {
+  function next(error, result) {
 
     // end on error or all done.
-    if (error || tasks.length < 1) done(error)
+    if (error || tasks.length < 1) done(error, result)
 
     // call next function.
     else tasks.shift().call(control, next, shared)

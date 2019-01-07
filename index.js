@@ -6,11 +6,18 @@ const flatten = require('@flatten/array') // allow nested arrays
 // tasks  - array of functions to call.
 // done   - error accepting callback.
 module.exports = function runTasks(shared, tasks, done) {
-  const control = { prepend, append, clear, tasks } // combine tasks w/utils
 
-  function next(error) { // iterator given to each task.
-    if (error || tasks.length < 1) done(error)     // end on error or all done.
-    else tasks.shift().call(control, next, shared) // call next function.
+  // combine tasks w/utils
+  const control = { prepend, append, clear, tasks }
+
+  // iterator given to each task.
+  function next(error) {
+
+    // end on error or all done.
+    if (error || tasks.length < 1) done(error)
+
+    // call next function.
+    else tasks.shift().call(control, next, shared)
   }
 
   process.nextTick(next) // return now, begin async later.

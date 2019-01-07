@@ -1,3 +1,5 @@
+'use strict'
+
 var flatten = require('@flatten/array') // allow nested arrays
 
 // shared - shared object given to every function as 2nd arg.

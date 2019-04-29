@@ -1,3 +1,8 @@
+## 1.1.1 - 2019/04/29
+
+1. switch node 11 to 12
+2. update deps
+
 ## 1.1.0 - 2019/01/07
 
 1. add strict mode

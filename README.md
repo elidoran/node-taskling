@@ -72,6 +72,9 @@ tasks(shared, array, done)
 // NOTE:
 //  tasks() will always return immediately before it begins execution.
 //  this is the standard behavior for asynchronous API's.
+//  by default it calls each task via `process.nextTick()`.
+//  to override that with setImmediate, pass it as the fourth arg.
+tasks(shared, array, done, setImmediate)
 
 
 // Succinct use:

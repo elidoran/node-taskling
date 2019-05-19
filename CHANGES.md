@@ -1,3 +1,9 @@
+## 1.2.0 - 2019/05/
+
+1. added ability to specify which function will run the tasks so setImmediate can be used instead of process.nextTick.
+2. updated README to explain new option
+
+
 ## 1.1.1 - 2019/04/29
 
 1. switch node 11 to 12

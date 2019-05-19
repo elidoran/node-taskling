@@ -2,10 +2,14 @@
 
 const flatten = require('@flatten/array') // allow nested arrays
 
-// shared - shared object given to every function as 2nd arg.
-// tasks  - array of functions to call.
-// done   - error accepting callback.
-module.exports = function runTasks(shared, tasks, done) {
+// shared   - shared object given to every function as 2nd arg.
+// tasks    - array of functions to call.
+// done     - error accepting callback.
+// executor - defaults to process.nextTick, could be setImmediate.
+module.exports = function runTasks(shared, tasks, done, executor) {
+
+  // run with nextTick by default.
+  const run = executor || process.nextTick
 
   // combine tasks w/utils
   const control = { prepend, append, clear, tasks }
@@ -20,7 +24,7 @@ module.exports = function runTasks(shared, tasks, done) {
     else tasks.shift().call(control, next, shared)
   }
 
-  process.nextTick(next) // return now, begin async later.
+  run(next) // return now, begin async later.
 }
 
 function prepend(array) { // add array of tasks to front of tasks array

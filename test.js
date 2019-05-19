@@ -1,5 +1,7 @@
-var assert = require('assert')
-var tasks  = require('./index.js')
+'use strict'
+
+const assert = require('assert')
+const tasks  = require('./index.js')
 
 describe('test taskling', function() {
 
@@ -8,7 +10,8 @@ describe('test taskling', function() {
   })
 
   it('should run a function', function(done) {
-    var ran = false
+    let ran = false
+
     tasks({}, [
       function(next) {
         ran = true
@@ -21,7 +24,8 @@ describe('test taskling', function() {
   })
 
   it('should run functions', function(done) {
-    var ran = 0
+    let ran = 0
+
     tasks({}, [
       function(next) {
         ran++
@@ -44,11 +48,12 @@ describe('test taskling', function() {
   })
 
   it('should provide same shared object to functions', function(done) {
-    var object = {
+    const object = {
       first: false,
       second: false,
       third: false
     }
+
     tasks(object, [
       function(next, context) {
         context.first = true
@@ -73,7 +78,8 @@ describe('test taskling', function() {
   })
 
   it('should start later', function(done) {
-    var started = false
+    let started = false
+
     tasks({}, [
       function(next) {
         started = true
@@ -85,7 +91,8 @@ describe('test taskling', function() {
   })
 
   it('should stop execution and give error to done()', function(done) {
-    var ran = 0
+    let ran = 0
+
     tasks({}, [
       function(next) {
         ran++
@@ -105,8 +112,9 @@ describe('test taskling', function() {
   })
 
   it('should prepend functions', function(done) {
-    var ran = 0
-    var soFar = null
+    let ran = 0
+    let soFar = null
+
     function fn(next) { ran++ ; next() }
 
     tasks({}, [
@@ -129,8 +137,9 @@ describe('test taskling', function() {
   })
 
   it('should append functions', function(done) {
-    var ran = 0
-    var soFar = null
+    let ran = 0
+    let soFar = null
+
     function fn(next) { ran++ ; next() }
 
     tasks({}, [
@@ -153,7 +162,8 @@ describe('test taskling', function() {
   })
 
   it('should clear remaining functions', function(done) {
-    var ran = 0
+    let ran = 0
+
     function fn(next) { ran++ ; next() }
 
     tasks({}, [
@@ -172,7 +182,8 @@ describe('test taskling', function() {
   })
 
   it('should flatten array provided to prepend()', function(done) {
-    var ran = 0
+    let ran = 0
+
     function fn(next) { ran++ ; next() }
 
     tasks({}, [
@@ -195,7 +206,8 @@ describe('test taskling', function() {
   })
 
   it('should flatten array provided to append()', function(done) {
-    var ran = 0
+    let ran = 0
+
     function fn(next) { ran++ ; next() }
 
     tasks({}, [
@@ -215,6 +227,40 @@ describe('test taskling', function() {
       assert.equal(ran, 3, 'should call all three appended functions')
       done()
     })
+  })
+
+  it('should use setImmediate', function(done) {
+    let ran = 0
+
+    function fn(next) { ran++ ; next() }
+
+    tasks({}, [
+      fn,
+      fn,
+      fn,
+    ], function() {
+      assert.equal(ran, 3, 'should call function three times')
+      done()
+    }, setImmediate)
+  })
+
+  it('should use custom executor', function(done) {
+    let ran = 0
+
+    function fn(next) { ran++ ; next() }
+
+    function executor(fn) {
+      setTimeout(fn, 100)
+    }
+
+    tasks({}, [
+      fn,
+      fn,
+      fn,
+    ], function() {
+      assert.equal(ran, 3, 'should call function three times')
+      done()
+    }, executor)
   })
 
 })

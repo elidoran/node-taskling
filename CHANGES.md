@@ -1,4 +1,4 @@
-## 1.2.0 - 2019/05/
+## 1.2.0 - 2019/05/18
 
 1. added ability to specify which function will run the tasks so setImmediate can be used instead of process.nextTick.
 2. updated README to explain new option

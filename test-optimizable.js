@@ -9,12 +9,12 @@ describe('verify optimizability', function() {
   it('with basic args', function(done) {
     let count = 3
 
-    const result = optimal(tasks, null, [
-      {},
-      [
+    const result = optimal(tasks, null, [ // args for function call
+      {}, // shared object
+      [ // task functions
         function(next) { next() }
       ],
-      function() {
+      function() { // done callback
         count--
         if (count <= 0) done()
       },

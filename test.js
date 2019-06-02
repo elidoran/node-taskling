@@ -190,17 +190,20 @@ describe('test taskling', function() {
       function(next) {
         this.prepend(
           [
+            fn,
             [
               fn,
-              [fn],
+              [fn, fn],
               fn,
-            ]
+            ],
+            fn,
+            fn
           ]
         )
         next()
       },
     ], function() {
-      assert.equal(ran, 3, 'should call all three prepended functions')
+      assert.equal(ran, 7, 'should call all three prepended functions')
       done()
     })
   })
@@ -214,17 +217,20 @@ describe('test taskling', function() {
       function(next) {
         this.append(
           [
+            fn,
             [
               fn,
-              [fn],
+              [fn, fn],
               fn,
-            ]
+            ],
+            fn,
+            fn
           ]
         )
         next()
       },
     ], function() {
-      assert.equal(ran, 3, 'should call all three appended functions')
+      assert.equal(ran, 7, 'should call all three appended functions')
       done()
     })
   })

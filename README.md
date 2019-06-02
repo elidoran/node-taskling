@@ -10,6 +10,7 @@ Features:
 1. Provides a shared object to each task function
 2. execution ends when a task provides an error to the callback
 3. mutable task queue via `prepend()`, `append()`, `clear()`
+4. Task arrays provided will be flattened.
 
 
 ## Install

@@ -1,12 +1,21 @@
 'use strict'
 
-const flatten = require('@flatten/array') // allow nested arrays
+// ignore for coverage. its coverage is checked manually with the two different
+// node versions required to test both branches of the statement.
+/* istanbul ignore next */
+const flatten = // allow nested arrays. try to use node 12's builtin flatten.
+  Array.prototype.flat ?
+    (array) => { return array.flat(Infinity) } // eslint-disable-line brace-style
+    : require('@flatten/array')
 
-// shared   - shared object given to every function as 2nd arg.
-// tasks    - array of functions to call.
-// done     - error accepting callback.
-// executor - defaults to process.nextTick, could be setImmediate.
-module.exports = function runTasks(shared, tasks, done, executor) {
+// shared    - shared object given to every function as 2nd arg.
+// taskArray - array of functions to call.
+// done      - error accepting callback.
+// executor  - defaults to process.nextTick, could be setImmediate.
+module.exports = function runTasks(shared, taskArray, done, executor) {
+
+  // allow nested arrays.
+  const tasks = flatten(taskArray)
 
   // run with nextTick by default.
   const run = executor || process.nextTick

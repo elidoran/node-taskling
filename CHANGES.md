@@ -1,3 +1,10 @@
+## 1.3.0 - 2019/06/02
+
+1. apply array flatten to task array given to main taskling function (it was already flattening those to prepend/append).
+2. uses the new builtin `Array.flat()` of node 12, when available (pass `Infinity` for depth).
+3. tweak some tests to be tougher (more depth/complexity in the arrays to flatten).
+
+
 ## 1.2.0 - 2019/05/18
 
 1. added ability to specify which function will run the tasks so setImmediate can be used instead of process.nextTick.

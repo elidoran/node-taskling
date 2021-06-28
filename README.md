@@ -1,5 +1,5 @@
 # taskling
-[![Build Status](https://travis-ci.org/elidoran/node-taskling.svg?branch=master)](https://travis-ci.org/elidoran/node-taskling)
+[![Build Status](https://travis-ci.com/elidoran/node-taskling.svg?branch=master)](https://travis-ci.com/elidoran/node-taskling)
 [![npm version](https://badge.fury.io/js/taskling.svg)](http://badge.fury.io/js/taskling)
 [![Coverage Status](https://coveralls.io/repos/github/elidoran/node-taskling/badge.svg?branch=master)](https://coveralls.io/github/elidoran/node-taskling?branch=master)
 

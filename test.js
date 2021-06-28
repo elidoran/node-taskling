@@ -1,272 +1,268 @@
 'use strict'
 
-const assert = require('assert')
+const tap = require('tap')
 const tasks  = require('./index.js')
 
-describe('test taskling', function() {
+tap.test('calls callback', function(t) {
+  tasks({}, [], () => { t.end() })
+})
 
-  it('should complete by calling done()', function(done) {
-    tasks({}, [], done)
-  })
+tap.test('run a function', function(t) {
+  let ran = false
 
-  it('should run a function', function(done) {
-    let ran = false
-
-    tasks({}, [
-      function(next) {
-        ran = true
-        next()
-      }
-    ], function() {
-      assert.equal(ran, true, 'should run function')
-      done()
-    })
-  })
-
-  it('should run functions', function(done) {
-    let ran = 0
-
-    tasks({}, [
-      function(next) {
-        ran++
-        next()
-      },
-
-      function(next) {
-        ran++
-        next()
-      },
-
-      function(next) {
-        ran++
-        next()
-      },
-    ], function() {
-      assert.equal(ran, 3, 'should run 3 functions')
-      done()
-    })
-  })
-
-  it('should provide same shared object to functions', function(done) {
-    const object = {
-      first: false,
-      second: false,
-      third: false
+  tasks({}, [
+    function(next) {
+      ran = true
+      next()
     }
-
-    tasks(object, [
-      function(next, context) {
-        context.first = true
-        next()
-      },
-
-      function(next, context) {
-        context.second = true
-        next()
-      },
-
-      function(next, context) {
-        context.third = true
-        next()
-      },
-    ], function() {
-      assert.equal(object.first, true)
-      assert.equal(object.second, true)
-      assert.equal(object.third, true)
-      done()
-    })
+  ], function() {
+    t.equal(ran, true, 'should run function')
+    t.end()
   })
+})
 
-  it('should start later', function(done) {
-    let started = false
+tap.test('run functions', function(t) {
+  let ran = 0
 
-    tasks({}, [
-      function(next) {
-        started = true
-        next()
-      }
-    ], done)
+  tasks({}, [
+    function(next) {
+      ran++
+      next()
+    },
 
-    assert.equal(started, false, 'should start async run later')
+    function(next) {
+      ran++
+      next()
+    },
+
+    function(next) {
+      ran++
+      next()
+    },
+  ], function() {
+    t.equal(ran, 3, 'should run 3 functions')
+    t.end()
   })
+})
 
-  it('should stop execution and give error to done()', function(done) {
-    let ran = 0
+tap.test('shared object', function(t) {
+  const object = {
+    first: false,
+    second: false,
+    third: false
+  }
 
-    tasks({}, [
-      function(next) {
-        ran++
-        next('error')
-      },
+  tasks(object, [
+    function(next, context) {
+      context.first = true
+      next()
+    },
 
-      function(next) {
-        ran++
-        next()
-      },
-    ], function(error, result) {
-      assert.equal(error, 'error')
-      assert.equal(result, null)
-      assert.equal(ran, 1, 'should only run first function')
-      done()
-    })
+    function(next, context) {
+      context.second = true
+      next()
+    },
+
+    function(next, context) {
+      context.third = true
+      next()
+    },
+  ], function() {
+    t.equal(object.first, true)
+    t.equal(object.second, true)
+    t.equal(object.third, true)
+    t.end()
   })
+})
 
-  it('should prepend functions', function(done) {
-    let ran = 0
-    let soFar = null
+tap.test('deferred execution', function(t) {
+  let started = false
 
-    function fn(next) { ran++ ; next() }
+  tasks({}, [
+    function(next) {
+      started = true
+      next()
+    }
+  ], () => { t.end() })
 
-    tasks({}, [
-      function(next) {
-        this.prepend([
-          fn, fn, fn
-        ])
-        next()
-      },
+  t.equal(started, false, 'should start async run later')
+})
 
-      function last(next) {
-        soFar = ran
-        next()
-      }
-    ], function() {
-      assert.equal(ran, 3, 'should run `fn` function 3 times')
-      assert.equal(soFar, 3, 'should run `last` after prepended functions')
-      done()
-    })
+tap.test('error stops execution', function(t) {
+  let ran = 0
+
+  tasks({}, [
+    function(next) {
+      ran++
+      next('error')
+    },
+
+    function(next) {
+      ran++
+      next()
+    },
+  ], function(error, result) {
+    t.equal(error, 'error')
+    t.same(result, null)
+    t.equal(ran, 1, 'should only run first function')
+    t.end()
   })
+})
 
-  it('should append functions', function(done) {
-    let ran = 0
-    let soFar = null
+tap.test('prepend functions', function(t) {
+  let ran = 0
+  let soFar = null
 
-    function fn(next) { ran++ ; next() }
+  function fn(next) { ran++ ; next() }
 
-    tasks({}, [
-      function(next) {
-        this.append([
-          fn, fn, fn
-        ])
-        next()
-      },
+  tasks({}, [
+    function(next) {
+      this.prepend([
+        fn, fn, fn
+      ])
+      next()
+    },
 
-      function second(next) {
-        soFar = ran
-        next()
-      }
-    ], function() {
-      assert.equal(ran, 3, 'should run `fn` function 3 times')
-      assert.equal(soFar, 0, 'should run `second` before appended functions')
-      done()
-    })
+    function last(next) {
+      soFar = ran
+      next()
+    }
+  ], function() {
+    t.equal(ran, 3, 'should run `fn` function 3 times')
+    t.equal(soFar, 3, 'should run `last` after prepended functions')
+    t.end()
   })
+})
 
-  it('should clear remaining functions', function(done) {
-    let ran = 0
+tap.test('append functions', function(t) {
+  let ran = 0
+  let soFar = null
 
-    function fn(next) { ran++ ; next() }
+  function fn(next) { ran++ ; next() }
 
-    tasks({}, [
-      function(next) {
-        this.clear()
-        next()
-      },
+  tasks({}, [
+    function(next) {
+      this.append([
+        fn, fn, fn
+      ])
+      next()
+    },
 
-      fn,
-      fn,
-      fn,
-    ], function() {
-      assert.equal(ran, 0, 'should clear functions')
-      done()
-    })
+    function second(next) {
+      soFar = ran
+      next()
+    }
+  ], function() {
+    t.equal(ran, 3, 'should run `fn` function 3 times')
+    t.equal(soFar, 0, 'should run `second` before appended functions')
+    t.end()
   })
+})
 
-  it('should flatten array provided to prepend()', function(done) {
-    let ran = 0
+tap.test('should clear remaining functions', function(t) {
+  let ran = 0
 
-    function fn(next) { ran++ ; next() }
+  function fn(next) { ran++ ; next() }
 
-    tasks({}, [
-      function(next) {
-        this.prepend(
+  tasks({}, [
+    function(next) {
+      this.clear()
+      next()
+    },
+
+    fn,
+    fn,
+    fn,
+  ], function() {
+    t.equal(ran, 0, 'should clear functions')
+    t.end()
+  })
+})
+
+tap.test('flatten array provided to prepend()', function(t) {
+  let ran = 0
+
+  function fn(next) { ran++ ; next() }
+
+  tasks({}, [
+    function(next) {
+      this.prepend(
+        [
+          fn,
           [
             fn,
-            [
-              fn,
-              [fn, fn],
-              fn,
-            ],
+            [fn, fn],
             fn,
-            fn
-          ]
-        )
-        next()
-      },
-    ], function() {
-      assert.equal(ran, 7, 'should call all three prepended functions')
-      done()
-    })
+          ],
+          fn,
+          fn
+        ]
+      )
+      next()
+    },
+  ], function() {
+    t.equal(ran, 7, 'should call all three prepended functions')
+    t.end()
   })
+})
 
-  it('should flatten array provided to append()', function(done) {
-    let ran = 0
+tap.test('should flatten array provided to append()', function(t) {
+  let ran = 0
 
-    function fn(next) { ran++ ; next() }
+  function fn(next) { ran++ ; next() }
 
-    tasks({}, [
-      function(next) {
-        this.append(
+  tasks({}, [
+    function(next) {
+      this.append(
+        [
+          fn,
           [
             fn,
-            [
-              fn,
-              [fn, fn],
-              fn,
-            ],
+            [fn, fn],
             fn,
-            fn
-          ]
-        )
-        next()
-      },
-    ], function() {
-      assert.equal(ran, 7, 'should call all three appended functions')
-      done()
-    })
+          ],
+          fn,
+          fn
+        ]
+      )
+      next()
+    },
+  ], function() {
+    t.equal(ran, 7, 'should call all three appended functions')
+    t.end()
   })
+})
 
-  it('should use setImmediate', function(done) {
-    let ran = 0
+tap.test('should use setImmediate', function(t) {
+  let ran = 0
 
-    function fn(next) { ran++ ; next() }
+  function fn(next) { ran++ ; next() }
 
-    tasks({}, [
-      fn,
-      fn,
-      fn,
-    ], function() {
-      assert.equal(ran, 3, 'should call function three times')
-      done()
-    }, setImmediate)
-  })
+  tasks({}, [
+    fn,
+    fn,
+    fn,
+  ], function() {
+    t.equal(ran, 3, 'should call function three times')
+    t.end()
+  }, setImmediate)
+})
 
-  it('should use custom executor', function(done) {
-    let ran = 0
+tap.test('should use custom executor', function(t) {
+  let ran = 0
 
-    function fn(next) { ran++ ; next() }
+  function fn(next) { ran++ ; next() }
 
-    function executor(fn) {
-      setTimeout(fn, 100)
-    }
+  function executor(fn) {
+    setTimeout(fn, 100)
+  }
 
-    tasks({}, [
-      fn,
-      fn,
-      fn,
-    ], function() {
-      assert.equal(ran, 3, 'should call function three times')
-      done()
-    }, executor)
-  })
-
+  tasks({}, [
+    fn,
+    fn,
+    fn,
+  ], function() {
+    t.equal(ran, 3, 'should call function three times')
+    t.end()
+  }, executor)
 })

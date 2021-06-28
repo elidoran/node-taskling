@@ -27,12 +27,14 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint index.js",
-    "test": "_mocha -R spec --bail --check-leaks test.js test-optimizable.js",
-    "test8": "nave use 8 npm test",
-    "test10": "nave use 10 npm test",
-    "test12": "nave use 12 npm test",
-    "tests": "npm run test8 && npm run test10 && npm run test12",
-    "coverage": "nyc --reporter=lcov --reporter=text-summary _mocha -R spec --bail --check-leaks test.js test-optimizable.js"
+    "test": "tap test.js",
+    "test10": "nave use 10 tap --no-coverage test.js",
+    "test12": "nave use 12 tap --no-coverage test.js",
+    "test14": "nave use 14 tap --no-coverage test.js",
+    "test16": "nave use 16 tap --coverage-report=lcovonly test.js",
+    "tests": "npm run test10 && npm run test12 && npm run test14 && npm run test16",
+    "coverage": "npm run tests && cat coverage/lcov.info | coveralls",
+    "coverage-clean": "rm -rf ./coverage ./.nyc_output"
   },
   "repository": {
     "type": "git",
@@ -41,18 +43,15 @@
   "bugs": "http://github.com/elidoran/node-taskling/issues",
   "devDependencies": {
     "@optimal/fn": "^0.3.1",
-    "coveralls": "^3.0.3",
-    "eslint": "^5.16.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^6.1.4",
-    "mocha-lcov-reporter": "^1.3.0",
-    "nave": "^2.4.1",
-    "nyc": "^14.1.1"
+    "coveralls": "^3.1.0",
+    "eslint": "^7.29.0",
+    "nave": "^3.2.2",
+    "tap": "^15.0.9"
   },
   "dependencies": {
     "@flatten/array": "^1.1.8"
   },
   "engines": {
-    "node": ">=8"
+    "node": ">=10"
   }
 }

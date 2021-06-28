@@ -1,12 +1,6 @@
 'use strict'
 
-// ignore for coverage. its coverage is checked manually with the two different
-// node versions required to test both branches of the statement.
-/* istanbul ignore next */
-const flatten = // allow nested arrays. try to use node 12's builtin flatten.
-  Array.prototype.flat ?
-    (array) => { return array.flat(Infinity) } // eslint-disable-line brace-style
-    : require('@flatten/array')
+const flatten = require('@flatten/array')
 
 // shared    - shared object given to every function as 2nd arg.
 // taskArray - array of functions to call.

@@ -4,7 +4,7 @@ const tap = require('tap')
 const tasks  = require('./index.js')
 
 tap.test('calls callback', function(t) {
-  tasks({}, [], () => { t.end() })
+  tasks({}, [next => { next() }], () => { t.end() })
 })
 
 tap.test('run a function', function(t) {
@@ -110,50 +110,60 @@ tap.test('error stops execution', function(t) {
 })
 
 tap.test('prepend functions', function(t) {
-  let ran = 0
-  let soFar = null
+  let
+    ran = [],
+    soFar = null
+    ; // end of let list.
 
-  function fn(next) { ran++ ; next() }
+  function fn1(next) { ran.push(1) ; next() }
+  function fn2(next) { ran.push(2) ; next() }
+  function fn3(next) { ran.push(3) ; next() }
 
   tasks({}, [
-    function(next) {
-      this.prepend([
-        fn, fn, fn
+    function(next, _, control) {
+      control.prepend([
+        fn1, fn2, fn3
       ])
       next()
     },
 
     function last(next) {
-      soFar = ran
+      soFar = ran.length
       next()
     }
   ], function() {
-    t.equal(ran, 3, 'should run `fn` function 3 times')
+    t.equal(ran.length, 3, 'should run `fn` function 3 times, in order')
+    t.same(ran, [1, 2, 3], 'should run fns in order')
     t.equal(soFar, 3, 'should run `last` after prepended functions')
     t.end()
   })
 })
 
 tap.test('append functions', function(t) {
-  let ran = 0
-  let soFar = null
+  let
+    ran = [],
+    soFar = null
+    ; // end of let list
 
-  function fn(next) { ran++ ; next() }
+  function fn1(next) { ran.push(1) ; next() }
+  function fn2(next) { ran.push(2) ; next() }
+  function fn3(next) { ran.push(3) ; next() }
 
   tasks({}, [
-    function(next) {
-      this.append([
-        fn, fn, fn
+    function(next, _, control) {
+      control.append([
+        fn1, fn2, fn3
       ])
       next()
     },
 
     function second(next) {
-      soFar = ran
+      soFar = ran.length
       next()
     }
   ], function() {
-    t.equal(ran, 3, 'should run `fn` function 3 times')
+    t.equal(ran.length, 3, 'should run three functions')
+    t.same(ran, [1,2,3], 'should run fns in order')
     t.equal(soFar, 0, 'should run `second` before appended functions')
     t.end()
   })
@@ -165,8 +175,8 @@ tap.test('should clear remaining functions', function(t) {
   function fn(next) { ran++ ; next() }
 
   tasks({}, [
-    function(next) {
-      this.clear()
+    function(next, _, control) {
+      control.clear()
       next()
     },
 
@@ -185,8 +195,8 @@ tap.test('flatten array provided to prepend()', function(t) {
   function fn(next) { ran++ ; next() }
 
   tasks({}, [
-    function(next) {
-      this.prepend(
+    function(next, _, control) {
+      control.prepend(
         [
           fn,
           [
@@ -201,7 +211,7 @@ tap.test('flatten array provided to prepend()', function(t) {
       next()
     },
   ], function() {
-    t.equal(ran, 7, 'should call all three prepended functions')
+    t.equal(ran, 7, 'should call all prepended functions')
     t.end()
   })
 })
@@ -212,8 +222,8 @@ tap.test('should flatten array provided to append()', function(t) {
   function fn(next) { ran++ ; next() }
 
   tasks({}, [
-    function(next) {
-      this.append(
+    function(next, _, control) {
+      control.append(
         [
           fn,
           [
@@ -228,13 +238,16 @@ tap.test('should flatten array provided to append()', function(t) {
       next()
     },
   ], function() {
-    t.equal(ran, 7, 'should call all three appended functions')
+    t.equal(ran, 7, 'should call all appended functions')
     t.end()
   })
 })
 
 tap.test('should use setImmediate', function(t) {
-  let ran = 0
+  let
+    ran = 0,
+    exec = false
+    ;
 
   function fn(next) { ran++ ; next() }
 
@@ -244,8 +257,12 @@ tap.test('should use setImmediate', function(t) {
     fn,
   ], function() {
     t.equal(ran, 3, 'should call function three times')
+    t.ok(exec, 'should use provided executor')
     t.end()
-  }, setImmediate)
+  }, function() {
+    exec = true
+    setImmediate.apply(this, arguments)
+  })
 })
 
 tap.test('should use custom executor', function(t) {

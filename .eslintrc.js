@@ -6,20 +6,21 @@ module.exports = {
   env: {
     browser: true,
     node: true,
+    es6: true
   },
 
   parserOptions: {
-    'ecmaVersion': 6
+    'ecmaVersion': 12
   },
 
   rules: {
     indent: [ 'error', 2 ],
     'linebreak-style': [ 'error', 'unix' ],
     quotes: [ 'error', 'single' ],
-    semi: [ 'error', 'never' ],
+    semi: [ 1, 'never' ], // not an error, using one at end of const list.
     'array-bracket-spacing': [2, 'never'],
     'block-scoped-var': 2,
-    'brace-style': [2, '1tbs'],
+    'brace-style': [2, '1tbs', { allowSingleLine: true }],
     camelcase: 1,
     'computed-property-spacing': [2, 'never'],
     curly: 0, // only a single if/else pair in library with short statements.

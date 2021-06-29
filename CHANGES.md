@@ -1,3 +1,17 @@
+## 2.0.0 - 2021/06/28
+
+1. update deps
+2. switch to tap from mocha
+3. remove test for optimizability
+4. always use @flatten/array
+5. store their task arrays in our array instead of push()'ing their fn's into our array.
+6. `reverse()` their array so we can `pop()` off the next fn.
+7. move tiny external functions into main function as closures.
+8. list each component in a `const` list.
+9. update tests for new algorithm.
+10. change Travis CI to travis-ci.com and use a single VM.
+
+
 ## 1.3.0 - 2019/06/02
 
 1. apply array flatten to task array given to main taskling function (it was already flattening those to prepend/append).

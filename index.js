@@ -7,7 +7,7 @@
 module.exports = function runTasks(shared, taskArray, done, executor) {
   const
     flatten = require('@flatten/array'),      // allow nested arrays,
-    tasks = [ flatten(taskArray).reverse() ], // by flattening.
+    tasks = [flatten(taskArray).reverse()],   // by flattening.
     run = executor || process.nextTick,       // run with nextTick by default.
     prepend = a => { tasks.unshift(flatten(a).reverse()) },
     append = a => { tasks.push(flatten(a).reverse()) },

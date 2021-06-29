@@ -11,6 +11,9 @@ Features:
 2. execution ends when a task provides an error to the callback
 3. mutable task queue via `prepend()`, `append()`, `clear()`
 4. Task arrays provided will be flattened.
+5. early termination by providing an error.
+6. last task can provide a result for the done callback.
+7. uses `process.nextTick` by default, can specify `setImmediate` or a custom executor.
 
 
 ## Install

@@ -37,22 +37,25 @@ const array = [
   function second(next, sharedObject) { next() },
 
   // the `this` context is a "control" object with helper functions:
-  function controlled(next) {
+  function controlled(next, _, control) {
     // prepend/append:
     //   - require an array argument.
     //   - accept nested arrays.
 
     // add array of functions to run *next*,
     // so they go in the front of the queue/array:
-    this.prepend([/* ... */])
+    control.prepend([/* ... */])
 
     // same as prepend() except they are added to the end.
-    this.append([/* ... */])
+    control.append([/* ... */])
 
     // empty the tasks array:
-    this.clear()
+    control.clear()
 
     next()  // always call next()
+    // last function can provide a result like this:
+    //   next(null, theResult)
+    // the first arg is null for error.
   },
 ]
 
